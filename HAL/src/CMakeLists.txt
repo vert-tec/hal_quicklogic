@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 if(CONFIG_GPIO_EOS_S3)
+	zephyr_sources(eoss3_hal_wb.c)
+	zephyr_sources(eoss3_hal_i2c.c)
 	zephyr_sources(eoss3_hal_gpio.c)
 	zephyr_sources(eoss3_hal_pad_config.c)
 endif()

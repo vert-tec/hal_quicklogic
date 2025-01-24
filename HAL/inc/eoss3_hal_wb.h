@@ -17,6 +17,10 @@
  *                                                          
  * ===========================================================
  *
+ *
+ *     Edit by M. Anschuetz
+ *     martin.anschuetz@vert-tec.io
+ * 
  */
 
 #ifndef HAL_INC_EOSS3_HAL_WB_H_
@@ -31,56 +35,62 @@
 /*!
  * \brief WB_ADDR register definition
  */
-#define WB_ADDR_SPI0_SLAVE_SEL		((UINT8_t)(0x2 << BYTE_IDX_6))
-#define WB_ADDR_I2C1_SLAVE_SEL		((UINT8_t)(0x1 << BYTE_IDX_6))
-#define WB_ADDR_I2C0_SLAVE_SEL		((UINT8_t)(0x0 << BYTE_IDX_6))
+#define WB_ADDR_SPI0_NODE_SEL		((uint8_t)(0x2 << BYTE_IDX_6))
+#define WB_ADDR_I2C1_NODE_SEL		((uint8_t)(0x1 << BYTE_IDX_6))
+#define WB_ADDR_I2C0_NODE_SEL		((uint8_t)(0x0 << BYTE_IDX_6))
 
 /*!
  *\brief Wishbone Control and status register definition
  */
-#define WB_CSR_SPI0MUX_SEL_WBMASTER		((UINT8_t)(1 << BYTE_IDX_7))
-#define WB_CSR_SPI0MUX_SEL_SM1                  ((UINT8_t)(0 << BYTE_IDX_7))        
-#define WB_CSR_I2C1MUX_SEL_WBMASTER             ((UINT8_t)(1 << BYTE_IDX_6))
-#define WB_CSR_I2C1MUX_SEL_SM1			((UINT8_t)(0 << BYTE_IDX_6))
-#define WB_CSR_I2C0MUX_SEL_WBMASTER             ((UINT8_t)(1 << BYTE_IDX_5))
-#define WB_CSR_I2C0MUX_SEL_SM0			((UINT8_t)(0 << BYTE_IDX_5))
+#define WB_CSR_SPI0MUX_SEL_WBMASTER		((uint8_t)(1 << BYTE_IDX_7))
+#define WB_CSR_SPI0MUX_SEL_SM1          ((uint8_t)(0 << BYTE_IDX_7))        
 
-#define WB_CSR_MASTER_WR_EN			((UINT8_t)(1 << BYTE_IDX_1))
-#define WB_CSR_MASTER_START			((UINT8_t)(1 << BYTE_IDX_0))
-#define WB_CSR_BUSY				((UINT8_t)(1 << BYTE_IDX_3))
-#define WB_CSR_OVFL				((UINT8_t)(1 << BYTE_IDX_4))
+#define WB_CSR_I2C1MUX_SEL_WBMASTER     ((uint8_t)(1 << BYTE_IDX_6))
+#define WB_CSR_I2C1MUX_SEL_SM1			((uint8_t)(0 << BYTE_IDX_6))
+
+#define WB_CSR_I2C0MUX_SEL_WBMASTER     ((uint8_t)(1 << BYTE_IDX_5))
+#define WB_CSR_I2C0MUX_SEL_SM0			((uint8_t)(0 << BYTE_IDX_5))
+
+#define WB_CSR_OVFL				        ((uint8_t)(1 << BYTE_IDX_4))
+#define WB_CSR_BUSY				        ((uint8_t)(1 << BYTE_IDX_3))
+
+#define WB_CSR_MUX_SEL_WB               ((uint8_t)(1 << BYTE_IDX_2))
+#define WB_CSR_MUX_SEL_SM               ((uint8_t)(0 << BYTE_IDX_2))
+
+#define WB_CSR_MASTER_WR_EN			    ((uint8_t)(1 << BYTE_IDX_1))
+#define WB_CSR_MASTER_START			    ((uint8_t)(1 << BYTE_IDX_0))
 
 /*!
- * \fn		HAL_StatusTypeDef HAL_WB_Transmit(UINT8_t ucOffset, UINT8_t ucVal, UINT8_t ucSlaveSel)
+ * \fn		int HAL_WB_Transmit(uint8_t ucOffset, uint8_t ucVal, uint8_t ucNodeSel)
  * \brief 	Function to send data over Wishbone interface
  * \param	ucOffset        --- Wishbone register offset
  * \param       ucVal           --- Data
- * \param       ucSlaveSel      --- Slave Select (I2C1 or I2C0 or SPI)
+ * \param       ucNodeSel      --- Node Select (I2C1 or I2C0 or SPI)
  * \return      HAL status
  */
-HAL_StatusTypeDef HAL_WB_Transmit(UINT8_t ucOffset, UINT8_t ucVal, UINT8_t ucSlaveSel);
+int HAL_WB_Transmit(uint8_t ucOffset, uint8_t ucVal, uint8_t ucNodeSel);
 /*!
- * \fn		HAL_StatusTypeDef HAL_WB_Receive(UINT8_t ucOffset, UINT8_t *buf, UINT8_t ucSlaveSel)
+ * \fn		int HAL_WB_Receive(uint8_t ucOffset, uint8_t *buf, uint8_t ucNodeSel)
  * \brief 	Function to read data over Wishbone interface
  * \param	ucOffset        --- Wishbone register offset
  * \param       ucVal           --- Data
- * \param       ucSlaveSel      --- Slave Select (I2C1 or I2C0 or SPI)
+ * \param       ucNodeSel      --- Node Select (I2C1 or I2C0 or SPI)
  * \return      HAL status
  */
-HAL_StatusTypeDef HAL_WB_Receive(UINT8_t ucOffset, UINT8_t *buf, UINT8_t ucSlaveSel);
+int HAL_WB_Receive(uint8_t ucOffset, uint8_t *buf, uint8_t ucNodeSel);
 /*!
- * \fn		HAL_StatusTypeDef HAL_WB_Init(UINT8_t ucSlaveSel)
+ * \fn		int HAL_WB_Init(uint8_t ucNodeSel)
  * \brief 	Function to initialize Wishbone interface
- * \param       ucSlaveSel      --- Slave Select (I2C1 or I2C0 or SPI)
+ * \param       ucNodeSel      --- Node Select (I2C1 or I2C0 or SPI)
  * \return      HAL status
  */
-HAL_StatusTypeDef HAL_WB_Init(UINT8_t ucSlaveSel);
+int HAL_WB_Init(uint8_t ucNodeSel);
 /*!
- * \fn		HAL_StatusTypeDef HAL_WB_DeInit(UINT8_t ucSlaveSel)
+ * \fn		int HAL_WB_DeInit(uint8_t ucNodeSel)
  * \brief 	Function to De-initialize Wishbone interface
- * \param       ucSlaveSel      --- Slave Select (I2C1 or I2C0 or SPI)
+ * \param       ucNodeSel      --- Node Select (I2C1 or I2C0 or SPI)
  * \return      HAL status
  */
-HAL_StatusTypeDef HAL_WB_DeInit(UINT8_t ucSlaveSel);
+int HAL_WB_DeInit(uint8_t ucNodeSel);
 
 #endif /* HAL_INC_EOSS3_HAL_WB_H_ */

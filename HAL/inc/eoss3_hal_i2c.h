@@ -17,7 +17,13 @@
  *                                                          
  * ===========================================================
  *
+ *
+ *     Edit by M. Anschuetz
+ *     martin.anschuetz@vert-tec.io
+ * 
  */
+
+
 #ifndef __EOSS3_HAL_I2C_H_
 #define __EOSS3_HAL_I2C_H_
 #include <stdint.h>
@@ -25,32 +31,33 @@
 #include "test_types.h"
 #include "eoss3_dev.h"
 #include "eoss3_hal_def.h"
+#include "eoss3_hal_wb.h"
 
    
 /* I2C internal states */
 typedef enum
 {
-  I2C_RESET=0,
-  I2C_READY,
-  I2C_BUSY,
-  I2C_TIMEOUT
+    I2C_RESET=0,
+    I2C_READY,
+    I2C_BUSY,
+    I2C_TIMEOUT
 }I2C_State;
 
 /* I2C clock frequency */
 typedef enum
 {
-  I2C_100KHZ = 1,
-  I2C_200KHZ,
-  I2C_300Khz,
-  I2C_400KHZ,
-  I2C_INVALID
+    I2C_100KHZ = 1,
+    I2C_200KHZ,
+    I2C_300Khz,
+    I2C_400KHZ,
+    I2C_INVALID
 }I2C_FREQ;
    
 /* interrupt mode */
 typedef enum
 {
-  I2C_DISABLE = 0,
-  I2C_ENABLE
+    I2C_DISABLE = 0,
+    I2C_ENABLE
 } I2C_IntMode;
 
 #define  I2C_PRELO                                  0
@@ -77,8 +84,8 @@ typedef enum
 #define HAL_I2C_INT_DISABLE()                       (I2C->I2C_MCR &= ~(1<<I2C_CR_IEN_BIT))
 
 /* Data register macros */
-#define HAL_I2C_WRITE_REQ(DEV_ADR)                  (I2C->I2C_TXRX_DR = (UINT8_t)((DEV_ADR<<1) & (~1)))
-#define HAL_I2C_READ_REQ(DEV_ADR)                   (I2C->I2C_TXRX_DR = (UINT8_t)((DEV_ADR<<1) | 1))  
+#define HAL_I2C_WRITE_REQ(DEV_ADR)                  (I2C->I2C_TXRX_DR = (uint8_t)((DEV_ADR<<1) & (~1)))
+#define HAL_I2C_READ_REQ(DEV_ADR)                   (I2C->I2C_TXRX_DR = (uint8_t)((DEV_ADR<<1) | 1))  
 
 /* Command register macros */
 
@@ -86,10 +93,10 @@ typedef enum
 #define CMD_STOP_BIT                                0x40
 #define CMD_READ_SLAVE_BIT                          0x20
 #define CMD_WRITE_SLAVE_BIT                         0x10
-#define CMD_NACK_BIT                                 0x08
+#define CMD_NACK_BIT                                0x08
 #define CMD_IACK_BIT                                0x01
   
-#define HAL_I2C_SET_CMD(CMD_VAL)                    (I2C->I2C_CMD_SR = (UINT8_t)CMD_VAL)
+#define HAL_I2C_SET_CMD(CMD_VAL)                    (I2C->I2C_CMD_SR = (uint8_t)CMD_VAL)
 
 /* Status register macros */
 
@@ -105,6 +112,12 @@ typedef enum
 #define HAL_I2C_IS_TIP_SET()                        (I2C->I2C_CMD_SR & (1<<SR_TIP_BIT))
 #define HAL_I2C_IS_IF_SET()                         (I2C->I2C_CMD_SR & (1<<SR_IF_BIT))
 
+typedef enum
+{
+    WB_I2C0 = WB_CSR_I2C0MUX_SEL_WBMASTER,
+    WB_I2C1 = WB_CSR_I2C1MUX_SEL_WBMASTER
+} I2C_Inst;
+
 
 /*! \struct FIFO_IntConfig eoss3_hal_i2c.h "inc/eoss3_hal_i2c.h"
  * 	\brief I2C clock and interrupt configuration structure.
@@ -113,61 +126,62 @@ typedef struct
 {
 	I2C_FREQ     eI2CFreq;                       /*!< I2C Frequency */
 	I2C_IntMode  eI2CInt;                        /*!< Interrupt enable */
-	UINT8_t	     ucI2Cn;
+	I2C_Inst	 ucI2Cn;
+    I2C_State    eI2CState;
 }I2C_Config;
 
-/*! \fn HAL_StatusTypeDef HAL_I2C0_Select(void)
- *  \brief Select I2C0 device to use for all I2C init/read/write operation.
- *
- *  \return HAL_StatusTypeDef      status of device.
- */
-HAL_StatusTypeDef HAL_I2C0_Select(void);
+// /*! \fn int HAL_I2C0_Select(void)
+//  *  \brief Select I2C0 device to use for all I2C init/read/write operation.
+//  *
+//  *  \return int      status of device.
+//  */
+// int HAL_I2C0_Select(void);
 
-/*! \fn HAL_StatusTypeDef HAL_I2C1_Select(void)
- *  \brief Select I2C1 device to use for all I2C init/read/write operation.
- *
- *  \return HAL_StatusTypeDef      status of device.
- */
-HAL_StatusTypeDef HAL_I2C1_Select(void);
+// /*! \fn int HAL_I2C1_Select(void)
+//  *  \brief Select I2C1 device to use for all I2C init/read/write operation.
+//  *
+//  *  \return int      status of device.
+//  */
+// int HAL_I2C1_Select(void);
 
-/*! \fn HAL_StatusTypeDef HAL_I2C_Init(I2C_Config xI2CConfig)
+/*! \fn int HAL_I2C_Init(I2C_Config xI2CConfig)
  *  \brief Select I2C1 device to use for all I2C init/read/write operation.
  *
  *  \param xI2CConfig           I2C configuration structure
- *  \return HAL_StatusTypeDef   status of device Init operation.
+ *  \return int   status of device Init operation.
  */
-HAL_StatusTypeDef HAL_I2C_Init(I2C_Config xI2CConfig);
+int HAL_I2C_Init(I2C_Config xI2CConfig);
 
-/*! \fn HAL_StatusTypeDef HAL_I2C_SetClockFreq(UINT32_t uiClkFreq)
+/*! \fn int HAL_I2C_SetClockFreq(uint32_t uiClkFreq)
  *  \brief Set clock frequency for I2C device. It may not be exact frequency when set.
  *
- *  \param uiClkFreq            I2C clock frequency to set.
- *  \return HAL_StatusTypeDef   status of frequency set operation.
+ *  \param xI2CConfig           I2C configuration structure
+ *  \return int   status of frequency set operation.
  */
-HAL_StatusTypeDef HAL_I2C_SetClockFreq(UINT32_t uiClkFreq);
+int HAL_I2C_SetClockFreq(I2C_Config xI2CConfig);
 
-/*! \fn HAL_StatusTypeDef HAL_I2C_Write(UINT8_t ucDevAddress, UINT8_t ucAddress, UINT8_t *pucDataBuf, UINT32_t uiLength)
+/*! \fn int HAL_I2C_Write(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength)
  *  \brief Write data to I2C device.
  *
  *  \param ucDevAddress         I2C device address.
  *  \param ucAddress            offset address in device to write.
  *  \param pucDataBuf           pointer to data array to write.
  *  \param uiLength             Length of data to write (in bytes)
- *  \return HAL_StatusTypeDef   status of I2C write operation.
+ *  \return int   status of I2C write operation.
  */
-HAL_StatusTypeDef HAL_I2C_Write(UINT8_t ucDevAddress, UINT8_t ucAddress, UINT8_t *pucDataBuf, UINT32_t uiLength);
+int HAL_I2C_Write(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
 
-/*! \fn HAL_StatusTypeDef HAL_I2C_Read(UINT8_t ucDevAddress, UINT8_t ucAddress, UINT8_t *pucDataBuf, UINT32_t uiLength)
+/*! \fn int HAL_I2C_Read(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength)
  *  \brief Read data from I2C device.
  *
  *  \param ucDevAddress         I2C device address.
  *  \param ucAddress            offset address in device to read.
  *  \param pucDataBuf           pointer to data array to read.
  *  \param uiLength             Length of data to read (in bytes)
- *  \return HAL_StatusTypeDef   status of I2C read operation.
+ *  \return int   status of I2C read operation.
  */
-HAL_StatusTypeDef HAL_I2C_Read(UINT8_t ucDevAddress, UINT8_t ucAddress, UINT8_t *pucDataBuf, UINT32_t uiLength);
+int HAL_I2C_Read(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
 
-HAL_StatusTypeDef HAL_I2C_Read16(UINT8_t ucDevAddress, UINT16_t ucAddress, UINT8_t *pucDataBuf, UINT32_t uiLength);
-HAL_StatusTypeDef HAL_I2C_Write16(UINT8_t ucDevAddress, UINT16_t ucAddress, UINT8_t *pucDataBuf, UINT32_t uiLength);
+int HAL_I2C_Read16(uint8_t ucDevAddress, uint16_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
+int HAL_I2C_Write16(uint8_t ucDevAddress, uint16_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
 #endif /* !__EOSS3_HAL_I2C_H_ */

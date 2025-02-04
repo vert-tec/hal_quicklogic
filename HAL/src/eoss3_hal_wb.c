@@ -19,7 +19,7 @@ int HAL_WB_Transmit(uint8_t ucAddr, uint8_t ucData, uint8_t ucNodeSel)
     while (EXT_REGS_FFE->CSR & (WB_CSR_BUSY | WB_CSR_MASTER_START))
         ;
 
-    EXT_REGS_FFE->ADDR = ucAddr;
+    EXT_REGS_FFE->ADDR = ucNodeSel | ucAddr;
     EXT_REGS_FFE->WDATA = ucData;
 
     if (ucNodeSel == WB_ADDR_SPI0_NODE_SEL)
@@ -42,7 +42,7 @@ int HAL_WB_Receive(uint8_t ucAddr, uint8_t *pucData, uint8_t ucNodeSel)
     while (EXT_REGS_FFE->CSR & (WB_CSR_BUSY | WB_CSR_MASTER_START))
         ;
 
-    EXT_REGS_FFE->ADDR = ucAddr;
+    EXT_REGS_FFE->ADDR = ucNodeSel | ucAddr;
 
     if (ucNodeSel == WB_ADDR_SPI0_NODE_SEL)
         EXT_REGS_FFE->CSR = WB_CSR_SPI0MUX_SEL_WBMASTER | WB_CSR_MASTER_START | WB_CSR_MUX_SEL_WB;
@@ -65,6 +65,11 @@ int HAL_WB_Receive(uint8_t ucAddr, uint8_t *pucData, uint8_t ucNodeSel)
 
 int HAL_WB_Init(uint8_t ucNodeSel)
 {
+    // ensure FFE power up
+    PMU->FFE_FB_PF_SW_WU |= PMU_FFE_FB_PF_SW_WU_FFE_WU;
+    while (!(PMU->FFE_STATUS & 1))
+        ;
+
 
     return 0;
 }

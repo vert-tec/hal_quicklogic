@@ -60,11 +60,11 @@ typedef enum
     I2C_ENABLE
 } I2C_IntMode;
 
-#define  I2C_PRELO                                  0
-#define  I2C_PREHI                                  1
-#define  I2C_MCR                                    2
-#define  I2C_TXRX_DR                                3
-#define  I2C_CMD_SR                                 4
+#define  I2C_PRELO                                  0   // Pre-Scaler Reg Low Byte
+#define  I2C_PREHI                                  1   // Pre-Scaler Reg High Byte
+#define  I2C_MCR                                    2   // Control Register
+#define  I2C_TXRX_DR                                3   // Rx/Tx Data Register
+#define  I2C_CMD_SR                                 4   // Command and Status Register
   
   
 /* Clock prescale macros */
@@ -74,14 +74,18 @@ typedef enum
 
 /* Control register macros */
 
-#define I2C_CR_EN_BIT                               7
-#define I2C_CR_IEN_BIT                              6
+#define I2C_CR_EN_BIT_Pos                           7
+#define I2C_CR_IEN_BIT_Pos                          6
 
-#define HAL_I2C_ENABLE()                            (I2C->I2C_MCR |= 1<<I2C_CR_EN_BIT)
-#define HAL_I2C_DISABLE()                           (I2C->I2C_MCR &= ~(1<<I2C_CR_EN_BIT))
+#define I2C_CR_EN_BIT                               ( 1 << I2C_CR_EN_BIT_Pos )
+#define I2C_CR_IEN_BIT                              ( 1 << I2C_CR_IEN_BIT_Pos )
 
-#define HAL_I2C_INT_ENABLE()                        (I2C->I2C_MCR |= 1<<I2C_CR_IEN_BIT)
-#define HAL_I2C_INT_DISABLE()                       (I2C->I2C_MCR &= ~(1<<I2C_CR_IEN_BIT))
+
+#define HAL_I2C_ENABLE()                            (I2C->I2C_MCR |= 1<<I2C_CR_EN_BIT_Pos)
+#define HAL_I2C_DISABLE()                           (I2C->I2C_MCR &= ~(1<<I2C_CR_EN_BIT_Pos))
+
+#define HAL_I2C_INT_ENABLE()                        (I2C->I2C_MCR |= 1<<I2C_CR_IEN_BIT_Pos)
+#define HAL_I2C_INT_DISABLE()                       (I2C->I2C_MCR &= ~(1<<I2C_CR_IEN_BIT_Pos))
 
 /* Data register macros */
 #define HAL_I2C_WRITE_REQ(DEV_ADR)                  (I2C->I2C_TXRX_DR = (uint8_t)((DEV_ADR<<1) & (~1)))
@@ -89,33 +93,40 @@ typedef enum
 
 /* Command register macros */
 
-#define CMD_START_BIT                               0x80
-#define CMD_STOP_BIT                                0x40
-#define CMD_READ_SLAVE_BIT                          0x20
-#define CMD_WRITE_SLAVE_BIT                         0x10
-#define CMD_NACK_BIT                                0x08
-#define CMD_IACK_BIT                                0x01
+#define I2C_CMD_START_BIT                           0x80
+#define I2C_CMD_STOP_BIT                            0x40
+#define I2C_CMD_READ_NODE_BIT                       0x20
+#define I2C_CMD_WRITE_NODE_BIT                      0x10
+#define I2C_CMD_NACK_BIT                            0x08
+#define I2C_CMD_IACK_BIT                            0x01
   
 #define HAL_I2C_SET_CMD(CMD_VAL)                    (I2C->I2C_CMD_SR = (uint8_t)CMD_VAL)
 
 /* Status register macros */
 
-#define SR_RXACK_BIT                                7
-#define SR_BUSY_BIT                                 6
-#define SR_AL_BIT                                   5
-#define SR_TIP_BIT                                  1
-#define SR_IF_BIT                                   0
+#define SR_RXACK_BIT_Pos                            7
+#define SR_BUSY_BIT_Pos                             6
+#define SR_AL_BIT_Pos                               5
+#define SR_TIP_BIT_Pos                              1
+#define SR_IF_BIT_Pos                               0
+
+#define I2C_SR_RXACK_BIT                            (1<<SR_RXACK_BIT_Pos)
+#define I2C_SR_BUSY_BIT                             (1<<SR_BUSY_BIT_Pos)
+#define I2C_SR_AL_BIT                               (1<<SR_AL_BIT_Pos)
+#define I2C_SR_TIP_BIT                              (1<<SR_TIP_BIT_Pos)
+#define I2C_SR_IF_BIT                               (1<<SR_IF_BIT_Pos)
+
   
-#define HAL_I2C_IS_RXACK_SET()                      (I2C->I2C_CMD_SR & (1<<SR_RXACK_BIT))
-#define HAL_I2C_IS_BUSY_SET()                       (I2C->I2C_CMD_SR & (1<<SR_BUSY_BIT))
-#define HAL_I2C_IS_AL_SET()                         (I2C->I2C_CMD_SR & (1<<SR_AL_BIT))
-#define HAL_I2C_IS_TIP_SET()                        (I2C->I2C_CMD_SR & (1<<SR_TIP_BIT))
-#define HAL_I2C_IS_IF_SET()                         (I2C->I2C_CMD_SR & (1<<SR_IF_BIT))
+// #define HAL_I2C_IS_RXACK_SET()                      (I2C->I2C_CMD_SR & (1<<SR_RXACK_BIT))
+// #define HAL_I2C_IS_BUSY_SET()                       (I2C->I2C_CMD_SR & (1<<SR_BUSY_BIT))
+// #define HAL_I2C_IS_AL_SET()                         (I2C->I2C_CMD_SR & (1<<SR_AL_BIT))
+// #define HAL_I2C_IS_TIP_SET()                        (I2C->I2C_CMD_SR & (1<<SR_TIP_BIT))
+// #define HAL_I2C_IS_IF_SET()                         (I2C->I2C_CMD_SR & (1<<SR_IF_BIT))
 
 typedef enum
 {
-    WB_I2C0 = WB_CSR_I2C0MUX_SEL_WBMASTER,
-    WB_I2C1 = WB_CSR_I2C1MUX_SEL_WBMASTER
+    WB_I2C0 = WB_ADDR_I2C0_NODE_SEL,
+    WB_I2C1 = WB_ADDR_I2C1_NODE_SEL
 } I2C_Inst;
 
 
@@ -126,7 +137,7 @@ typedef struct
 {
 	I2C_FREQ     eI2CFreq;                       /*!< I2C Frequency */
 	I2C_IntMode  eI2CInt;                        /*!< Interrupt enable */
-	I2C_Inst	 ucI2Cn;
+	I2C_Inst	 ucI2Cn;                         /*!< I2C Instance */
     I2C_State    eI2CState;
 }I2C_Config;
 
@@ -150,7 +161,7 @@ typedef struct
  *  \param xI2CConfig           I2C configuration structure
  *  \return int   status of device Init operation.
  */
-int HAL_I2C_Init(I2C_Config xI2CConfig);
+int HAL_I2C_Init(I2C_Config *xI2CConfig);
 
 /*! \fn int HAL_I2C_SetClockFreq(uint32_t uiClkFreq)
  *  \brief Set clock frequency for I2C device. It may not be exact frequency when set.
@@ -158,7 +169,14 @@ int HAL_I2C_Init(I2C_Config xI2CConfig);
  *  \param xI2CConfig           I2C configuration structure
  *  \return int   status of frequency set operation.
  */
-int HAL_I2C_SetClockFreq(I2C_Config xI2CConfig);
+int HAL_I2C_SetClockFreq(I2C_Config *xI2CConfig);
+
+
+int HAL_I2C_StartTransfer(I2C_Config *cfg, uint8_t ucDevAddress, uint8_t flags);
+void HAL_I2C_EndTransfer(I2C_Config *cfg);
+
+
+int HAL_I2C_Write_Reg(I2C_Config *cfg, uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucData);
 
 /*! \fn int HAL_I2C_Write(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength)
  *  \brief Write data to I2C device.
@@ -169,7 +187,7 @@ int HAL_I2C_SetClockFreq(I2C_Config xI2CConfig);
  *  \param uiLength             Length of data to write (in bytes)
  *  \return int   status of I2C write operation.
  */
-int HAL_I2C_Write(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
+int HAL_I2C_Write(I2C_Config *cfg, uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
 
 /*! \fn int HAL_I2C_Read(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength)
  *  \brief Read data from I2C device.
@@ -180,8 +198,8 @@ int HAL_I2C_Write(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, 
  *  \param uiLength             Length of data to read (in bytes)
  *  \return int   status of I2C read operation.
  */
-int HAL_I2C_Read(uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
+int HAL_I2C_Read(I2C_Config *cfg, uint8_t ucDevAddress, uint8_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
 
-int HAL_I2C_Read16(uint8_t ucDevAddress, uint16_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
-int HAL_I2C_Write16(uint8_t ucDevAddress, uint16_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
+int HAL_I2C_Read16(I2C_Config *cfg, uint8_t ucDevAddress, uint16_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
+int HAL_I2C_Write16(I2C_Config *cfg, uint8_t ucDevAddress, uint16_t ucAddress, uint8_t *pucDataBuf, uint32_t uiLength);
 #endif /* !__EOSS3_HAL_I2C_H_ */

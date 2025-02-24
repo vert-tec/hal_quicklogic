@@ -14,6 +14,9 @@
 #include "eoss3_hal_wb.h"
 
 
+#define CRU_CLK_CTRL_x_0_DIV_BY(x) ((x) < 2 ? 0x000 : (0x200 | ((x)-2)))
+
+
 int HAL_WB_Transmit(uint8_t ucAddr, uint8_t ucData, uint8_t ucNodeSel)
 {
     while (EXT_REGS_FFE->CSR & (WB_CSR_BUSY | WB_CSR_MASTER_START))
@@ -70,6 +73,19 @@ int HAL_WB_Init(uint8_t ucNodeSel)
     while (!(PMU->FFE_STATUS & 1))
         ;
 
+    if (ucNodeSel == WB_ADDR_SPI0_NODE_SEL)
+    {
+        
+        CRU->CLK_CTRL_B_0 = CRU_CLK_CTRL_x_0_DIV_BY(2); // Good Call!
+        
+        // Start clock C08X4 = 36 MHz and C08X1 = 9 MHz
+        // Assuming main clock is 72MHz
+        CRU->CLK_CTRL_C_0 = CRU_CLK_CTRL_x_0_DIV_BY(1);
+        CRU->C01_CLK_GATE |= C01_CLK_GATE_PATH_3_ON | C01_CLK_GATE_PATH_9_ON;            // = FFE Gate Path
+        CRU->C08_X1_CLK_GATE |= C08_X1_CLK_GATE_PATH_0_ON;
+        CRU->C08_X4_CLK_GATE |= C08_X4_CLK_GATE_PATH_0_ON;
+        
+    }
 
     return 0;
 }

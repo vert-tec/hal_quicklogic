@@ -18,6 +18,10 @@
  *                                                          
  * ===========================================================
  *
+ *
+ *     Edit by M. Anschuetz
+ *     martin.anschuetz@vert-tec.io
+ * 
  */
 
 #ifndef TAMAR_HAL_SPI_H_
@@ -78,12 +82,12 @@ typedef enum {
 
 
 /*! Sensor SPI Master PAD selection.
-If ucSPI0PadSel = 0 then,
+If ucSPIPadSel = 0 then,
 SPI_MOSI--> PAD6, SPI_MISO--> PAD8, SPI_CLK--> PAD10, SPI_SSN1--> PAD9,
 SPI_SSN2--> PAD2, SPI_SSN3--> PAD4, SPI_SSN4--> PAD5, SPI_SSN5--> PAD7,
 SPI_SSN6--> PAD11, SPI_SSN7--> PAD12, SPI_SSN8--> PAD13
 
-If ucSPI0PadSel = 1 then,
+If ucSPIPadSel = 1 then,
 SPI_MOSI--> PAD28, SPI_MISO--> PAD29, SPI_CLK--> PAD31, SPI_SSN1--> PAD30,
 SPI_SSN2--> PAD36, SPI_SSN3--> PAD4, SPI_SSN4--> PAD26, SPI_SSN5--> PAD27,
 SPI_SSN6--> PAD33, SPI_SSN7--> PAD35, SPI_SSN8--> PAD37
@@ -96,6 +100,7 @@ SPI_SSN6--> PAD33, SPI_SSN7--> PAD35, SPI_SSN8--> PAD37
 typedef struct
 {
 	UINT8_t  		ucSPIInf;			/*! SPI Interface : ucSPIInf = 0 (4-wire), ucSPIInf = 1 (3-wire) interface */
+	uint8_t 		ucSPIPadSel;		/*! SPI Pad Selection (See Table above)*/
 	FlashCmdType	ucCmdType;			/*! SPI Flash command type */
 	UINT8_t			ucSSn;				/*! SPI slave select pin */
 	UINT32_t		ucFreq;				/*! SPI Communication Frequency */
@@ -224,7 +229,7 @@ typedef struct __SPI_HandleTypeDef
 #define SPI0_CFG_REG				0x2
 #define SPI0_TX_RX_REG				0x3
 #define SPI0_CMD_STS_REG			0x4
-#define SPI0_SS_REG				0x5
+#define SPI0_SS_REG					0x5
 #define SPI0_CLK_CTRL_REG			0x6
 #define SPI0_ADD_CLK_REG			0x7
 
@@ -252,15 +257,15 @@ typedef struct __SPI_HandleTypeDef
  * \brief SPI Interrupt/Status register bit definition
  */
 #define SPI_STAT_TIP				((UINT8_t) (1 << BYTE_IDX_2))
-#define SPI_INTR_IW				((UINT8_t) (1 << BYTE_IDX_1))
-#define SPI_INTR_IR				((UINT8_t) (1 << BYTE_IDX_0))
+#define SPI_INTR_IW					((UINT8_t) (1 << BYTE_IDX_1))
+#define SPI_INTR_IR					((UINT8_t) (1 << BYTE_IDX_0))
 
 
 /*!
  * \brief SPI configuration register (offset 0x2) bit definition
  */
 #define SPI_SYSTEM_EN				((UINT8_t)(1 << BYTE_IDX_7))
-#define SPI_INTR_EN				((UINT8_t)(1 << BYTE_IDX_6))
+#define SPI_INTR_EN					((UINT8_t)(1 << BYTE_IDX_6))
 
 #define SPI_MS_INTR_EN				((UINT32_t)0x40000)
 

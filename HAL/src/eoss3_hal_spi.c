@@ -72,29 +72,45 @@ int HAL_SM_SPI_PinConfig(SPI_HandleTypeDef *hspi)
     if (hspi->Init.ucSPIPadSel == 0)
     {
         // CS PINs
-        if (cs_bits & (1 << 0)) // CS #1
+        if ((cs_bits & (1 << 0)) > 0) // CS #1
+        {
             IO_MUX->PAD_9_CTRL = 0x01 | PAD_E_4MA;
+        }
 
-        if (cs_bits & (1 << 1)) // CS #2
+        if ((cs_bits & (1 << 1)) > 0) // CS #2
+        {
             IO_MUX->PAD_2_CTRL = 0x01 | PAD_E_4MA;
+        }   
 
-        if (cs_bits & (1 << 2)) // CS #3
+        if ((cs_bits & (1 << 2)) > 0) // CS #3
+        {
             IO_MUX->PAD_4_CTRL = 0x01 | PAD_E_4MA;
+        }
 
-        if (cs_bits & (1 << 3)) // CS #4
+        if ((cs_bits & (1 << 3)) > 0) // CS #4
+        {
             IO_MUX->PAD_5_CTRL = 0x01 | PAD_E_4MA;
+        }
 
-        if (cs_bits & (1 << 4)) // CS #5
+        if ((cs_bits & (1 << 4)) > 0) // CS #5
+        {
             IO_MUX->PAD_7_CTRL = 0x01 | PAD_E_4MA;
+        }
 
-        if (cs_bits & (1 << 5)) // CS #6
+        if ((cs_bits & (1 << 5)) > 0) // CS #6
+        {
             IO_MUX->PAD_11_CTRL = 0x01 | PAD_E_4MA;
+        }
 
-        if (cs_bits & (1 << 6)) // CS #7
+        if ((cs_bits & (1 << 6)) > 0) // CS #7
+        {
             IO_MUX->PAD_12_CTRL = 0x01 | PAD_E_4MA;
+        }
 
-        if (cs_bits & (1 << 7)) // CS #8
+        if ((cs_bits & (1 << 7)) > 0) // CS #8
+        {
             IO_MUX->PAD_13_CTRL = 0x01 | PAD_E_4MA;
+        }
 
         
         //! CLK
@@ -112,28 +128,28 @@ int HAL_SM_SPI_PinConfig(SPI_HandleTypeDef *hspi)
     else if(hspi->Init.ucSPIPadSel == 1)
     {
         // CS PINs
-        if (cs_bits & (1 << 0)) // CS #1
+        if ((cs_bits & (1 << 0)) > 0) // CS #1
             IO_MUX->PAD_30_CTRL = 0x01 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 1)) // CS #2
+        if ((cs_bits & (1 << 1)) > 0) // CS #2
             IO_MUX->PAD_36_CTRL = 0x02 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 2)) // CS #3
+        if ((cs_bits & (1 << 2)) > 0) // CS #3
             IO_MUX->PAD_4_CTRL = 0x01 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 3)) // CS #4
+        if ((cs_bits & (1 << 3)) > 0) // CS #4
             IO_MUX->PAD_26_CTRL = 0x01 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 4)) // CS #5
+        if ((cs_bits & (1 << 4)) > 0) // CS #5
             IO_MUX->PAD_27_CTRL = 0x01 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 5)) // CS #6
+        if ((cs_bits & (1 << 5)) > 0) // CS #6
             IO_MUX->PAD_33_CTRL = 0x01 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 6)) // CS #7
+        if ((cs_bits & (1 << 6)) > 0) // CS #7
             IO_MUX->PAD_35_CTRL = 0x02 | PAD_E_4MA;
 
-        if (cs_bits & (1 << 7)) // CS #8
+        if ((cs_bits & (1 << 7)) > 0) // CS #8
             IO_MUX->PAD_37_CTRL = 0x02 | PAD_E_4MA;
 
         //! CLK

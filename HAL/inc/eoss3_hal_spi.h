@@ -322,6 +322,8 @@ int HAL_SPI_EndTransfer(SPI_HandleTypeDef *hspi);
 int HAL_SPI_Write(SPI_HandleTypeDef *hspi, uint8_t *pData, size_t uiLen);
 int HAL_SPI_Read(SPI_HandleTypeDef *hspi, uint8_t *pData, size_t uiLen);
 
+// int HAL_SPI_WriteCommand(SPI_HandleTypeDef *hspi, uint8_t cmd);
+
 /*!
 * \fn      HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxData, const uint16_t usTxSize, uint8_t *pRxData,const uint16_t usRxSize,
 *                                          void (*HAL_SPI_TxRxComplCallback)(void))
